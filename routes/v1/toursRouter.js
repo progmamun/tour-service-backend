@@ -8,4 +8,6 @@ router
   .get(toursControllers.getAllTours)
   .post(toursControllers.createTour);
 
+router.route('/:id').get(toursControllers.getOneTourById);
+
 module.exports = router;

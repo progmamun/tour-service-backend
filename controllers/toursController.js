@@ -1,5 +1,6 @@
 const Tours = require('../models/Tours');
 const asyncHandler = require('../middleware/async');
+const { isValidObjectId } = require('mongoose');
 
 // @desc      Get all tours
 // @route     GET /tours
@@ -45,7 +46,20 @@ exports.getCheapest = asyncHandler(async (req, res, next) => {});
 // @desc      Get all tours
 // @route     GET /tours
 // @access    Public
-exports.getOneTourById = asyncHandler(async (req, res, next) => {});
+exports.getOneTourById = asyncHandler(async (req, res, next) => {
+  const { id } = req.params;
+  const result = await Tours.findById(id);
+  const incViewCont = await Tours.updateOne(
+    { _id: id },
+    { $inc: { viewCount: 1 } }
+  );
+  if (!result || !isValidObjectId(id) || !incViewCont.acknowledged) {
+    return res.status(400).json({ success: false, message: 'no data found' });
+  }
+  res
+    .status(200)
+    .json({ success: true, message: 'get tour details by id', data: result });
+});
 
 // @desc      Get all tours
 // @route     GET /tours
