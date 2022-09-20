@@ -42,7 +42,12 @@ exports.createTour = asyncHandler(async (req, res, next) => {
 // @desc      Get all tours
 // @route     GET /tours
 // @access    Public
-exports.getCheapest = asyncHandler(async (req, res, next) => {});
+exports.getCheapest = asyncHandler(async (req, res, next) => {
+  const cheapest = await Tours.find().sort('price').limit(3);
+  res
+    .status(200)
+    .json({ success: true, message: 'cheapest tours price', data: cheapest });
+});
 
 // @desc      Get all tours
 // @route     GET /tours

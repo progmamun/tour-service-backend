@@ -4,6 +4,7 @@ const toursControllers = require('../../controllers/toursController');
 const router = express.Router();
 
 router.route('/trending').get(toursControllers.getTrending);
+router.route('/cheapest').get(toursControllers.getCheapest);
 
 router
   .route('/')
