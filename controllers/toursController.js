@@ -1,5 +1,6 @@
 const Tours = require('../models/Tours');
 const asyncHandler = require('../middleware/async');
+const ErrorResponse = require('../utils/errorResponse');
 const { isValidObjectId } = require('mongoose');
 
 // @desc      Get all tours
@@ -62,11 +63,32 @@ exports.getOneTourById = asyncHandler(async (req, res, next) => {
 });
 
 // @desc      Get all tours
-// @route     GET /tours
+// @route     GET /tours/trending
 // @access    Public
-exports.getTrending = asyncHandler(async (req, res, next) => {});
+exports.getTrending = asyncHandler(async (req, res, next) => {
+  const trending = await Tours.find({}).sort('-viewCount').limit(3);
+  if (!trending || trending.length === 0) {
+    return next(new ErrorResponse(`No data fount`, 404));
+  }
+  res
+    .status(200)
+    .json({ success: true, message: 'Trending tours', data: trending });
+});
 
 // @desc      Get all tours
 // @route     GET /tours
 // @access    Public
-exports.updateById = asyncHandler(async (req, res, next) => {});
+exports.updateById = asyncHandler(async (req, res, next) => {
+  const { id } = req.params;
+  const data = req.body;
+  const result = await Tours.updateOne(
+    { _id: id },
+    { $set: data },
+    { runValidators: true }
+  );
+
+  if (!result.acknowledged || !isValidObjectId(id)) {
+    return res.status(400).json({ success: false, message: 'no data updated' });
+  }
+  res.status(200).json({ success: true, message: 'tour updated' });
+});
