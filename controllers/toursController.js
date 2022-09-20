@@ -25,8 +25,8 @@ exports.getAllTours = asyncHandler(async (req, res, next) => {
     .json({ success: true, message: 'get all tours', data: tours });
 });
 
-// @desc      Get all tours
-// @route     GET /tours
+// @desc      Create a tours
+// @route     POST /tours
 // @access    Public
 exports.createTour = asyncHandler(async (req, res, next) => {
   const data = req.body;
@@ -39,8 +39,8 @@ exports.createTour = asyncHandler(async (req, res, next) => {
   res.status(201).json({ success: true, message: 'Tour Created' });
 });
 
-// @desc      Get all tours
-// @route     GET /tours
+// @desc      Get cheapest tours
+// @route     GET /tours/cheapest
 // @access    Public
 exports.getCheapest = asyncHandler(async (req, res, next) => {
   const cheapest = await Tours.find().sort('price').limit(3);
@@ -49,8 +49,8 @@ exports.getCheapest = asyncHandler(async (req, res, next) => {
     .json({ success: true, message: 'cheapest tours price', data: cheapest });
 });
 
-// @desc      Get all tours
-// @route     GET /tours
+// @desc      Get a tour by id
+// @route     GET /tours/id
 // @access    Public
 exports.getOneTourById = asyncHandler(async (req, res, next) => {
   const { id } = req.params;
@@ -67,21 +67,21 @@ exports.getOneTourById = asyncHandler(async (req, res, next) => {
     .json({ success: true, message: 'get tour details by id', data: result });
 });
 
-// @desc      Get all tours
+// @desc      Get all trending tours
 // @route     GET /tours/trending
 // @access    Public
 exports.getTrending = asyncHandler(async (req, res, next) => {
   const trending = await Tours.find({}).sort('-viewCount').limit(3);
   if (!trending || trending.length === 0) {
-    return next(new ErrorResponse(`No data fount`, 404));
+    return next(new ErrorResponse(`No data found`, 404));
   }
   res
     .status(200)
     .json({ success: true, message: 'Trending tours', data: trending });
 });
 
-// @desc      Get all tours
-// @route     GET /tours
+// @desc      update tours service
+// @route     PATCH /tours/id
 // @access    Public
 exports.updateById = asyncHandler(async (req, res, next) => {
   const { id } = req.params;
